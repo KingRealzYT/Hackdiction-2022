@@ -1,7 +1,7 @@
-# Hackadiction-2022-Submission: Contra
+# Hackadiction 2022 Submission: Contra
 
 ## What is Contra?
-Contra is a game that isn't really what it seems. More hearts is death while no hearts means full lives. The world is upside when your in contra.
+Contra is a game that isn't really what it seems. More hearts is death while no hearts means full lives. Red Lava is good? while the open sky is very very bad. Everything is different then it normally is!
 
 ## Who made Contra?
 Contra is made by Me, and my 2 teammates/friends.
