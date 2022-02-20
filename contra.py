@@ -8,6 +8,10 @@ app.keybindsScreen = False
 app.infoScreen = False
 app.levelScreen = False
 
+# Score Variables
+app.score = 0
+score = Label('Score: ' + str(app.score), 350, 60, fill='white', visible=False)
+
 # Menu Variables
 app.menuOn = False
 
@@ -18,7 +22,7 @@ app.levelSelected = 'None'
 app.levelPlay = False
 
 # Health Variables
-app.health = 100
+app.health = 0
 
 # Level Variables
 app.l1 = False
@@ -32,9 +36,17 @@ l1h2 = Circle(350, 20, 10, fill='black', visible=False)
 l1h3 = Circle(380, 20, 10, fill='black', visible=False)
 l1h4 = Label('Health: ' + str(app.health), 350, 40, fill='white', visible=True)
 
-level1Group.add(l1b1, l1b2, l1h1, l1h2, l1h3, l1h4)
+level1Group.add(l1b1, l1b2, l1h1, l1h2, l1h3, l1h4, score)
 
 level1Group.visible = False
+
+# Level 1 Death Zones
+DeathZone1 = Group()
+dz1 = Rect(-400, 0, 425, 25, fill='red', opacity=25)
+dz2 = Rect(100, 0, 400, 25, fill='red', opacity=25)
+DeathZone1.add(dz1, dz2)
+DeathZone1.speed = 6
+DeathZone1.visible = False
 
 # Keybinds Variables
 app.changeLeftKeybind = False
@@ -209,6 +221,34 @@ def level1():
     ls3.visible = False
     ls4.visible = False
     w1a1l15.visible = False
+    DeathZone1.visible = True
+    score.visible = True
+
+
+def nextDZ1():
+    DeathZone1.bottom = 0
+    DeathZone1.centerX = randrange(50, 350)
+
+
+# Move Death Zone 1
+def moveDz1():
+    if app.l1:
+        DeathZone1.top += DeathZone1.speed
+        if DeathZone1.top >= 400:
+            app.score += 1
+            score.value = 'Score: ' + str(app.score)
+
+            if DeathZone1.speed < 11:
+                DeathZone1.speed += 1
+
+            nextDZ1()
+
+
+def winGame():
+    app.l1 = False
+    level1Group.visible = False
+    player.visible = False
+    app.background = 'black'
 
 
 # End Game Function
@@ -516,11 +556,23 @@ def onKeyHold(keys):
         elif app.rightKeybind in keys:
             if app.playerMovement:
                 player.centerX += 5
+        if app.l1:
+            if app.leftKeybind in keys:
+                if app.playerMovement:
+                    player.centerX -= 10
+            elif app.rightKeybind in keys:
+                if app.playerMovement:
+                    player.centerX += 10
 
 
 # Runs every second
 def onStep():
     if app.l1:
+        moveDz1()
+        if player.hitsShape(dz1) or player.hitsShape(dz2):
+            nextDZ1()
+            app.health += randrange(15, 25)
+            l1h4.value = 'Health: ' + str(app.health)
         if app.health >= 33:
             l1h1.fill = rgb(0, 255, 0)
         if app.health >= 67:
@@ -533,6 +585,8 @@ def onStep():
             player.right = 400
         if app.health >= 100:
             endGame()
+        if app.score >= 20:
+            winGame()
     if app.menuOn:
         menu.visible = True
         app.playerMovement = False
