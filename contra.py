@@ -15,6 +15,22 @@ score = Label('Score: ' + str(app.score), 350, 60, fill='white', visible=False)
 # Menu Variables
 app.menuOn = False
 
+# Win Label Variables
+winLabels = Group()
+wl1 = Label('You thought you won but you actually lost!', 200, 200, size=15, fill='white')
+wl2 = Label('Score: ' + str(app.score), 200, 250, fill='white', size=25)
+wl3 = Label('Thanks for Playing!', 200, 300, size=25, fill='white')
+winLabels.add(wl1, wl2, wl3)
+winLabels.visible = False
+
+# Lose Label Variables
+loseLabels = Group()
+ll1 = Label('You lost but you actually won!', 200, 200, size=25, fill='white')
+ll2 = Label('Score: ' + str(app.score), 200, 250, fill='white', size=25)
+ll3 = Label('Thanks for Playing!', 200, 300, size=25, fill='white')
+loseLabels.add(ll1, ll2, ll3)
+loseLabels.visible = False
+
 # World Variables
 app.world1a1 = False
 app.world1a2 = False
@@ -237,10 +253,8 @@ def moveDz1():
         if DeathZone1.top >= 400:
             app.score += 1
             score.value = 'Score: ' + str(app.score)
-
             if DeathZone1.speed < 11:
                 DeathZone1.speed += 1
-
             nextDZ1()
 
 
@@ -249,6 +263,8 @@ def winGame():
     level1Group.visible = False
     player.visible = False
     app.background = 'black'
+    winLabels.visible = True
+    wl2.value = 'Score: ' + str(app.score)
 
 
 # End Game Function
@@ -257,6 +273,8 @@ def endGame():
     level1Group.visible = False
     player.visible = False
     app.background = 'black'
+    loseLabels.visible = True
+    ll2.value = 'Score: ' + str(app.score)
 
 
 # Check whenever the mouse Moves
@@ -585,7 +603,7 @@ def onStep():
             player.right = 400
         if app.health >= 100:
             endGame()
-        if app.score >= 20:
+        if app.score >= 15:
             winGame()
     if app.menuOn:
         menu.visible = True
