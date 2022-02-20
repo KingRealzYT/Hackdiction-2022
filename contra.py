@@ -17,6 +17,25 @@ app.world1a2 = False
 app.levelSelected = 'None'
 app.levelPlay = False
 
+# Health Variables
+app.health = 100
+
+# Level Variables
+app.l1 = False
+
+# Level 1 Variables
+level1Group = Group()
+l1b1 = Rect(0, 280, 400, 120, fill='green', visible=False)
+l1b2 = Arc(0, 0, 80, 100, 0, 180, fill='yellow', visible=False)
+l1h1 = Circle(320, 20, 10, fill='black', visible=False)
+l1h2 = Circle(350, 20, 10, fill='black', visible=False)
+l1h3 = Circle(380, 20, 10, fill='black', visible=False)
+l1h4 = Label('Health: ' + str(app.health), 350, 40, fill='white', visible=True)
+
+level1Group.add(l1b1, l1b2, l1h1, l1h2, l1h3, l1h4)
+
+level1Group.visible = False
+
 # Keybinds Variables
 app.changeLeftKeybind = False
 app.changeRightKeybind = False
@@ -152,7 +171,7 @@ infoGroup.visible = False
 
 # Player Variables and Shapes
 app.playerMovement = False
-player = Rect(0, 260, 20, 20, fill='limeGreen', visible=False)
+player = Rect(0, 260, 20, 20, fill='red', visible=False)
 player.toFront()
 
 
@@ -170,9 +189,34 @@ def goBack():
                 backLabel.visible = False
                 backLabelHitbox.visible = False
                 app.backButtonEnabled = False
+                app.l1 = False
+                level1Group.visible = False
     if app.changeLeftKeybind or app.changeRightKeybind:
         print('debug')
         cks2.value = "Choose a Keybind First!"
+
+
+# Level 1 Function
+def level1():
+    app.background = 'skyBlue'
+    level1Group.visible = True
+    app.l1 = True
+    app.world1a1 = False
+    app.world1a2 = False
+    w1a1Group.visible = False
+    w1a2Group.visible = False
+    lsGroup.visible = False
+    ls3.visible = False
+    ls4.visible = False
+    w1a1l15.visible = False
+
+
+# End Game Function
+def endGame():
+    app.l1 = False
+    level1Group.visible = False
+    player.visible = False
+    app.background = 'black'
 
 
 # Check whenever the mouse Moves
@@ -326,6 +370,10 @@ def onMousePress(x, y):
                 ls2.size = 20
                 app.levelSelected = '1'
                 ls2.value = 'Level Selected: ' + app.levelSelected
+        if ls4.visible:
+            if ls4.contains(x, y):
+                app.l1 = True
+                level1()
 
     # Exit Game Function
     if app.startScreen:
@@ -472,6 +520,19 @@ def onKeyHold(keys):
 
 # Runs every second
 def onStep():
+    if app.l1:
+        if app.health >= 33:
+            l1h1.fill = rgb(0, 255, 0)
+        if app.health >= 67:
+            l1h2.fill = rgb(0, 255, 0)
+        if app.health >= 100:
+            l1h3.fill = rgb(0, 255, 0)
+        if player.left < 0:
+            player.left = 0
+        elif player.right > 400:
+            player.right = 400
+        if app.health >= 100:
+            endGame()
     if app.menuOn:
         menu.visible = True
         app.playerMovement = False
@@ -485,11 +546,17 @@ def onStep():
             app.world1a1 = False
             app.world1a2 = True
             player.left = 0
+            lsGroup.visible = False
+            ls3.visible = False
+            ls4.visible = False
+            w1a1l15.visible = False
     elif app.world1a2:
         if player.left < 0:
             app.world1a1 = True
             app.world1a2 = False
             player.right = 400
+            app.levelSelected = 'None'
+            ls2.value = 'Level Selected: ' + app.levelSelected
         elif player.right > 400:
             player.right = 400
     if app.world1a1:
